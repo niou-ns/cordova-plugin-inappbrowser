@@ -108,6 +108,10 @@ public class InAppChromeClient extends WebChromeClient {
                     if(message == null || message.length() == 0) {
                         scriptResult = new PluginResult(PluginResult.Status.OK, new JSONArray());
                     } else {
+                        // Fix for Salesforce wrapping the code into ""
+                        if (message.charAt(0) == '"' && message.charAt(message.length() - 1) == '"') {
+                            message = message.substring(1, message.length() - 1).replace("\\\"", "\"");
+                        }
                         try {
                             scriptResult = new PluginResult(PluginResult.Status.OK, new JSONArray(message));
                         } catch(JSONException e) {

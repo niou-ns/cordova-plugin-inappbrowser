@@ -243,7 +243,9 @@ public class InAppBrowser extends CordovaPlugin {
         else if (action.equals("injectScriptCode")) {
             String jsWrapper = null;
             if (args.getBoolean(1)) {
-                jsWrapper = String.format("(function(){prompt(JSON.stringify([eval(%%s)]), 'gap-iab://%s')})()", callbackContext.getCallbackId());
+//              This is hack for some Salesforce VisualForce Pages
+//              jsWrapper = String.format("(function(){ prompt(JSON.stringify([eval(%%s)]), 'gap-iab://%s')})()", callbackContext.getCallbackId());
+                jsWrapper = String.format("(function(_window){ var iframe = document.createElement('iframe'); if (!document.body) return false; document.body.appendChild(iframe); _window._prompt = iframe.contentWindow.prompt; document.body.removeChild(iframe); _window._prompt.apply(_window, [JSON.stringify([eval(%%s)]), 'gap-iab://%s'])})(window)", callbackContext.getCallbackId());
             }
             injectDeferredObject(args.getString(0), jsWrapper);
         }
